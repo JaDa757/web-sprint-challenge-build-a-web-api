@@ -1,34 +1,52 @@
 const express = require('express');
-const Projects = require('./projects-model');
+const Project = require('./projects-model');
+
+const {
+    validateProjectId,
+    validateProject,
+
+} = require('./projects-middleware')
 
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
     console.log('Handling GET request for /api/projects/')
-    Projects.get()
+    Project.get()
         .then(projects => {
             res.json(projects);
         })
         .catch(next);
 });
 
-router.get('/:id/', (req, res) => {
+router.get('/:id/', validateProjectId, async (req, res, next) => {
+    try {
+        res.json(req.project)
+    } catch (err) {
+        next(err)
+    }
+});
+
+router.post('/', validateProject, (req, res, next) => {
+    Project.insert(req.body)
+    .then(newProject => {        
+        res.status(201).json(newProject)
+    })
+    .catch(next)
+});
+
+router.put('/:id/', validateProjectId, validateProject, (req, res, next) => {
+    Project.update(req.params.id, req.body)
+    .then(updatedProject => {
+        res.json(updatedProject)
+    })
+    .catch(next)
+});
+
+router.delete('/:id/', validateProjectId, validateProject, (req, res) => {
     // Handle route logic for /api/projects/:id/
 });
 
-router.post('/', (req, res) => {
-    // Handle route logic for /api/projects/
-});
-
-router.put('/:id/', (req, res) => {
-    // Handle route logic for /api/projects/:id/
-});
-
-router.delete('/:id/', (req, res) => {
-    // Handle route logic for /api/projects/:id/
-});
-
-router.get('/:id/actions', (req, res) => {
+router.get('/:id/actions', validateProjectId, validateProject, (req, res) => {
     // Handle route logic for /api/projects/:id/actions
 });
 
