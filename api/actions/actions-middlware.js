@@ -13,7 +13,7 @@ function logger(req, res, next) {
 }
 }
 
-async function validateAction( req, res, next) {
+async function validateActionId( req, res, next) {
     try{
         const action = await Action.get(req.params.id)
         if(!action) {
@@ -31,8 +31,20 @@ async function validateAction( req, res, next) {
     }
 }
 
+function validateAction( req, res, next) {
+    const { notes, description, project_id } = req.body
+    if(!notes || !description || !project_id) {
+        res.status(400).json ({
+            message: 'missing required field',
+        })
+    } else {
+        next()
+    }
+}
+
 
 module.exports = {
     logger, 
+    validateActionId,
     validateAction,
 }

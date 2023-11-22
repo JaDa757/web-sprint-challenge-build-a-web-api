@@ -2,6 +2,7 @@ const express = require('express');
 const Action = require('./actions-model')
 
 const {
+    validateActionId,
     validateAction,
 } = require('./actions-middlware')
 
@@ -15,7 +16,7 @@ router.get('/', (req, res, next) => {
         .catch(next);
 });
 
-router.get('/:id/', validateAction, async (req, res, next) => {
+router.get('/:id/', validateActionId, async (req, res, next) => {
     try {
         console.log('hello from actions router')
     } catch (err) {
@@ -23,6 +24,17 @@ router.get('/:id/', validateAction, async (req, res, next) => {
     }
 })
 
+router.post('/', validateAction, (req, res, next) => {
+    console.log('post')
+})
+
+router.put('/:id/', validateActionId, validateAction, (rec, res, next) => {
+    console.log('put')
+})
+
+router.delete('/:id/', validateActionId, async (req, res, next) => {
+    console.log('delete')
+})
 
 router.use((err, req, res, next) => { //eslint-disable-line   
     res.status(err.status || 500).json({
