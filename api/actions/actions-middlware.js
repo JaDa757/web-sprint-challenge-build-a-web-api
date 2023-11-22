@@ -1,22 +1,22 @@
 const Action = require('./actions-model')
 
 function logger(req, res, next) {
-   try { 
-    const timeStamp = new Date().toLocaleString()
-    const method = req.method
-    const url = req.originalUrl
-    console.log(`[${timeStamp}] ${method} to ${url}`)
-    next()
-} catch (error) {
-    console.log('logger middlware error', error)
-    next(error)
-}
+    try {
+        const timeStamp = new Date().toLocaleString()
+        const method = req.method
+        const url = req.originalUrl
+        console.log(`[${timeStamp}] ${method} to ${url}`)
+        next()
+    } catch (error) {
+        console.log('logger middlware error', error)
+        next(error)
+    }
 }
 
-async function validateActionId( req, res, next) {
-    try{
+async function validateActionId(req, res, next) {
+    try {
         const action = await Action.get(req.params.id)
-        if(!action) {
+        if (!action) {
             res.status(404).json({
                 message: 'no such action'
             })
@@ -31,10 +31,10 @@ async function validateActionId( req, res, next) {
     }
 }
 
-function validateAction( req, res, next) {
-    const { notes, description, project_id } = req.body
-    if(!notes || !description || !project_id) {
-        res.status(400).json ({
+function validateAction(req, res, next) {
+    const { notes, description, project_id, completed } = req.body
+    if (!notes || !description || !project_id || completed === undefined) {
+        res.status(400).json({
             message: 'missing required field',
         })
     } else {
@@ -44,7 +44,7 @@ function validateAction( req, res, next) {
 
 
 module.exports = {
-    logger, 
+    logger,
     validateActionId,
     validateAction,
 }

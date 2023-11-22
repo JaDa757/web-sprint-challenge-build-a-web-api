@@ -16,24 +16,47 @@ router.get('/', (req, res, next) => {
         .catch(next);
 });
 
-router.get('/:id/', validateActionId, async (req, res, next) => {
+// router.get('/', async (req, res, next) => {
+//     try {
+//         const actions = await Action.get();
+//         res.status(200).json(actions);
+//         console.log(actions)
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+router.get('/:id', validateActionId, async (req, res, next) => {
     try {
-        console.log('hello from actions router')
+        res.json(req.action)
     } catch (err) {
         next(err)
     }
 })
 
 router.post('/', validateAction, (req, res, next) => {
-    console.log('post')
+    Action.insert(req.body)
+    .then(newAction => {
+        res.status(201).json(newAction)
+    })
+    .catch(next)
 })
 
-router.put('/:id/', validateActionId, validateAction, (rec, res, next) => {
-    console.log('put')
+router.put('/:id', validateActionId, validateAction, (req, res, next) => {
+    Action.update(req.params.id, req.body)
+    .then(updatedAction => {
+        res.json(updatedAction)
+    })
+    .catch(next)
 })
 
-router.delete('/:id/', validateActionId, async (req, res, next) => {
-    console.log('delete')
+router.delete('/:id', validateActionId, async (req, res, next) => {
+    try{
+        const result = await Action.remove(req.params.id)
+        res.json(result)
+    } catch(err) {
+        next(err)
+    }
 })
 
 router.use((err, req, res, next) => { //eslint-disable-line   
