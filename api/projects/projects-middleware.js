@@ -13,7 +13,7 @@ async function validateProjectId(req, res, next) {
         }
     } catch (err) {
         res.status(500).json({
-            message: 'proplem finding project'
+            message: 'problem finding project'
         })
     }
 }

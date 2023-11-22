@@ -14,9 +14,10 @@ server.use(express.json())
 server.get('/api/hello', (req, res) => {
     res.json({message: 'The api is working'})
 })
+
 server.use('*', (req, res) => {
     res.status(404).json({
-        message:'not found'
+        message:'not found (index.js)'
     })
 })
 
